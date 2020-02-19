@@ -62,4 +62,5 @@ func PushLog(message *LogEntry, DDC *LogConfig)(*http.Response, error){
 
 	res, err := client.Do(req)
 	return res, err
+
 }
