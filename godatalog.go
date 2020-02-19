@@ -29,6 +29,14 @@ type LogEntry struct {
 	Tags string `json:"ddtags"` // comma separated with no spaces
 }
 
+func CreateLogEntry(message string, serviceName string, source string, hostName string, level string, logger string, appName string, tags string) *LogEntry {
+	return &LogEntry{Message: message, ServiceName: serviceName, Source: source, HostName: hostName, Level: level, Logger: logger, AppName: appName, Tags: tags}
+}
+
+func CreateLogConfig(URL string, port int, useSSL bool, useTCP bool, APIKey string, tags string) *LogConfig {
+	return &LogConfig{URL: URL, Port: port, UseSSL: useSSL, UseTCP: useTCP, APIKey: APIKey, Tags: tags}
+}
+
 func DebugLog(err error, DDC *LogConfig){
 
 }
