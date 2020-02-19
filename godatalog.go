@@ -8,6 +8,7 @@ import (
 )
 
 type LogConfig struct {
+	// LogConfig is used to set the datadog parameters used for sending log messages.
 	URL string
 	Port int
 	UseSSL bool
@@ -16,6 +17,7 @@ type LogConfig struct {
 }
 
 type LogEntry struct {
+	// LogEntry is used to set the log messages.
 	Message string `json:"message"`
 	ServiceName string
 	Source string `json:"source"`
@@ -23,10 +25,11 @@ type LogEntry struct {
 	Level string `json:"level"`
 	Logger string `json:"service"`
 	AppName string `json:"appname"`
-	Tags string `json:"ddtags"`
+	Tags string `json:"ddtags"` // comma separated with no spaces
 }
 
 func PushLog(message *LogEntry, DDC *LogConfig)(*http.Response, error){
+	// PushLog
 	p, err := json.Marshal(message)
 	if err != nil {fmt.Println(err)}
 
