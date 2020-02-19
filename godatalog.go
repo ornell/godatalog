@@ -14,18 +14,32 @@ type LogConfig struct {
 	UseSSL bool
 	UseTCP bool
 	APIKey string
+	Tags string
 }
 
 type LogEntry struct {
 	// LogEntry is used to set the log messages.
 	Message string `json:"message"`
-	ServiceName string
+	ServiceName string `json:"service"`
 	Source string `json:"source"`
 	HostName string `json:"hostname"`
 	Level string `json:"level"`
-	Logger string `json:"service"`
+	Logger string `json:"logger"`
 	AppName string `json:"appname"`
 	Tags string `json:"ddtags"` // comma separated with no spaces
+}
+
+func DebugLog(err error, DDC *LogConfig){
+
+}
+func InfoLog(err error, DDC *LogConfig){
+
+}
+func WarnLog(err error, DDC *LogConfig){
+
+}
+func ErrLog(err error, DDC *LogConfig){
+
 }
 
 func PushLog(message *LogEntry, DDC *LogConfig)(*http.Response, error){
