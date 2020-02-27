@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 type LogConfig struct {
@@ -29,6 +31,7 @@ type LogEntry struct {
 	Tags string `json:"ddtags"` // comma separated with no spaces
 }
 
+
 func CreateLogEntry(message string, serviceName string, source string, hostName string, level string, logger string, appName string, tags string) *LogEntry {
 	return &LogEntry{Message: message, ServiceName: serviceName, Source: source, HostName: hostName, Level: level, Logger: logger, AppName: appName, Tags: tags}
 }
@@ -37,17 +40,31 @@ func CreateLogConfig(URL string, port int, useSSL bool, useTCP bool, APIKey stri
 	return &LogConfig{URL: URL, Port: port, UseSSL: useSSL, UseTCP: useTCP, APIKey: APIKey, Tags: tags}
 }
 
-func DebugLog(err error, DDC *LogConfig){
-
+func DebugLog(err error, DDC *LogConfig)(res *http.Response, er error){
+	res, er = Log("debug", err, DDC)
+	return res, er
 }
-func InfoLog(err error, DDC *LogConfig){
-
+func InfoLog(err error, DDC *LogConfig)(res *http.Response, er error){
+	res, er = Log("info", err, DDC)
+	return res, er
 }
-func WarnLog(err error, DDC *LogConfig){
-
+func WarnLog(err error, DDC *LogConfig)(res *http.Response, er error){
+	res, er = Log("warn", err, DDC)
+	return res, er
 }
-func ErrLog(err error, DDC *LogConfig){
+func ErrLog(err error, DDC *LogConfig)(res *http.Response, er error){
+	res, er = Log("error", err, DDC)
+	return res, er
+}
 
+func Log(severity string, err error, DDC *LogConfig)(res *http.Response, er error){
+	host, _ := os.Hostname()
+	var serviceName string
+	if len(os.Getenv("SERVICENAME")) != 0{serviceName = os.Getenv("SERVICENAME")
+	}else{serviceName = filepath.Base(os.Args[0])}
+
+	res, er = PushLog(CreateLogEntry(err.Error(), filepath.Base(os.Args[0]), serviceName, host, severity, "godatalog", filepath.Base(os.Args[0]), DDC.Tags), DDC)
+	return res, er
 }
 
 func PushLog(message *LogEntry, DDC *LogConfig)(*http.Response, error){
@@ -62,5 +79,4 @@ func PushLog(message *LogEntry, DDC *LogConfig)(*http.Response, error){
 
 	res, err := client.Do(req)
 	return res, err
-
 }

@@ -1,3 +1,3 @@
-module github.com/ornell/godatalog
+module godatalog
 
 go 1.13
